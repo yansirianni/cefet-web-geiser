@@ -43,10 +43,8 @@ app.get('/jogador/:numero_identificador/', function(request, response){
 
     jogosJogador.games.sort((a,b) => b.playtime_forever - a.playtime_forever);
     jogosJogador.games.forEach(game => {
-        game.playtime_forever = Math.floor(game.playtime_forever/60);
+       game.playtime_forever = Math.floor(game.playtime_forever/60);
     });     
-    
-    console.log('a')
     
     response.render('jogador', {
         perfil: jogador,
