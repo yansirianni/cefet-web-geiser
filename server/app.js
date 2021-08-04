@@ -35,7 +35,28 @@ app.get('/', function(request, response){
 // jogador, usando os dados do banco de dados "data/jogadores.json" e
 // "data/jogosPorJogador.json", assim como alguns campos calculados
 // dica: o handler desta função pode chegar a ter ~15 linhas de código
+app.get('/jogador/:numero_identificador/', function(request, response){
+    const jogadorId = request.params.numero_identificador;
+    const jogador = db.jogadores.players.find(j => j.steamid === jogadorId);
+    const jogosJogador = db.jogosPorJogador[jogador.steamid];    
+    const qtdJogosNaoJogados = jogosJogador.games.filter( j => j.playtime_forever === 0).length;
 
+    jogosJogador.games.sort((a,b) => b.playtime_forever - a.playtime_forever);
+    jogosJogador.games.forEach(game => {
+        game.playtime_forever = Math.floor(game.playtime_forever/60);
+    });     
+    
+    console.log('a')
+    
+    response.render('jogador', {
+        perfil: jogador,
+        jogos: jogosJogador,
+        qtdJogos: jogosJogador.game_count,
+        qtdJogosNaoJogados: qtdJogosNaoJogados,
+        jogosMaisJogados: jogosJogador.games.slice(0, 5),
+        jogoFavorito: jogosJogador.games[0]
+    });
+});
 
 // EXERCÍCIO 1
 // configurar para servir os arquivos estáticos da pasta "client"
